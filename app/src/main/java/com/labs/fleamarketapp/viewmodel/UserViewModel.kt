@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.labs.fleamarketapp.api.ApiClient
 import com.labs.fleamarketapp.api.models.LoginRequest
+import com.labs.fleamarketapp.api.models.RegisterRequest
 import com.labs.fleamarketapp.data.UiState
 import com.labs.fleamarketapp.data.User
 import com.labs.fleamarketapp.data.UserType
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.util.Locale
 
 class UserViewModel : ViewModel() {
@@ -40,34 +40,26 @@ class UserViewModel : ViewModel() {
             _loginState.value = UiState.Loading
             try {
                 val response = api.login(LoginRequest(email = email, password = password))
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    if (body?.success == true && body.data != null) {
-                        val token = body.data.token
-                        val serverUser = body.data.user
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val userData = response.body()?.data
+                    if (userData != null) {
                         val user = User(
-                            id = serverUser.id,
-                            email = serverUser.email,
-                            name = listOf(serverUser.firstName, serverUser.lastName)
-                                .joinToString(" ").trim(),
-                            phone = serverUser.phone,
-                            rating = (serverUser.rating ?: 0.0).toFloat(),
-                            userType = when (serverUser.role.uppercase(Locale.US)) {
-                                "SELLER" -> UserType.SELLER
-                                else -> UserType.BUYER
-                            },
-                            authToken = token
+                            id = userData.id,
+                            email = userData.email,
+                            name = "${userData.firstName} ${userData.lastName}".trim(),
+                            phone = userData.phone,
+                            rating = userData.rating.toFloat(),
+                            userType = resolveUserType(userData.role),
+                            status = userData.status
                         )
-                        _authToken.value = token
                         _currentUser.value = user
+                        _authToken.value = user.id // Using user ID as token for now
                         _loginState.value = UiState.Success(user)
                     } else {
-                        val message = body?.message ?: "Login failed"
-                        _loginState.value = UiState.Error(message)
+                        _loginState.value = UiState.Error(response.body()?.message ?: "Login failed")
                     }
                 } else {
-                    val errorMessage = extractErrorMessage(response.errorBody()?.string()) ?: "Login failed"
-                    _loginState.value = UiState.Error(errorMessage)
+                    _loginState.value = UiState.Error(response.body()?.message ?: "Login failed")
                 }
             } catch (e: Exception) {
                 _loginState.value = UiState.Error(e.message ?: "Login failed")
@@ -107,44 +99,36 @@ class UserViewModel : ViewModel() {
             _signupState.value = UiState.Loading
             try {
                 val (firstName, lastName) = splitName(name)
-                val payload = mutableMapOf(
-                    "email" to email,
-                    "password" to password,
-                    "firstName" to firstName,
-                    "lastName" to lastName,
-                    "role" to userType.name
+                val request = RegisterRequest(
+                    email = email,
+                    password = password,
+                    firstName = firstName,
+                    lastName = lastName,
+                    phone = phone,
+                    role = userType.name
                 )
-                phone?.let { payload["phone"] = it }
                 
-                val response = api.register(payload)
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    if (body?.success == true && body.data != null) {
-                        val token = body.data.token
-                        val serverUser = body.data.user
+                val response = api.register(request)
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val userData = response.body()?.data
+                    if (userData != null) {
                         val user = User(
-                            id = serverUser.id,
-                            email = serverUser.email,
-                            name = listOf(serverUser.firstName, serverUser.lastName)
-                                .joinToString(" ").trim(),
-                            phone = serverUser.phone,
-                            rating = (serverUser.rating ?: 0.0).toFloat(),
-                            userType = when (serverUser.role.uppercase(Locale.US)) {
-                                "SELLER" -> UserType.SELLER
-                                else -> UserType.BUYER
-                            },
-                            authToken = token
+                            id = userData.id,
+                            email = userData.email,
+                            name = "${userData.firstName} ${userData.lastName}".trim(),
+                            phone = userData.phone,
+                            rating = userData.rating.toFloat(),
+                            userType = resolveUserType(userData.role),
+                            status = userData.status
                         )
-                        _authToken.value = token
                         _currentUser.value = user
+                        _authToken.value = user.id
                         _signupState.value = UiState.Success(user)
                     } else {
-                        val message = body?.message ?: "Signup failed"
-                        _signupState.value = UiState.Error(message)
+                        _signupState.value = UiState.Error(response.body()?.message ?: "Signup failed")
                     }
                 } else {
-                    val errorMessage = extractErrorMessage(response.errorBody()?.string()) ?: "Signup failed"
-                    _signupState.value = UiState.Error(errorMessage)
+                    _signupState.value = UiState.Error(response.body()?.message ?: "Signup failed")
                 }
             } catch (e: Exception) {
                 _signupState.value = UiState.Error(e.message ?: "Signup failed")
@@ -159,33 +143,11 @@ class UserViewModel : ViewModel() {
         return first to last
     }
     
-    private fun extractErrorMessage(raw: String?): String? {
-        if (raw.isNullOrBlank()) return null
-        return try {
-            val json = JSONObject(raw)
-            when {
-                json.optJSONArray("message") != null -> {
-                    val array = json.optJSONArray("message")
-                    if (array != null && array.length() > 0) {
-                        val messages = mutableListOf<String>()
-                        for (i in 0 until array.length()) {
-                            val entry = array.opt(i)
-                            if (entry != null) {
-                                messages.add(entry.toString())
-                            }
-                        }
-                        messages.joinToString(", ")
-                    } else {
-                        null
-                    }
-                }
-                json.optString("message").isNotBlank() -> json.optString("message")
-                json.optString("error").isNotBlank() -> json.optString("error")
-                else -> raw
-            }
-        } catch (_: Exception) {
-            raw
+    private fun resolveUserType(role: String): UserType =
+        when (role.uppercase(Locale.US)) {
+            "SELLER" -> UserType.SELLER
+            "ADMIN" -> UserType.ADMIN
+            else -> UserType.BUYER
         }
-    }
 }
 

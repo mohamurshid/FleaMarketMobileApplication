@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
         com.labs.fleamarketapp.local.entities.UserPreferences::class,
         com.labs.fleamarketapp.local.entities.CartItem::class
     ],
-    version = 3,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

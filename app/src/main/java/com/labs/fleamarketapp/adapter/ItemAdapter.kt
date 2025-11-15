@@ -33,12 +33,14 @@ class ItemAdapter(
         private val titleText: TextView = itemView.findViewById(R.id.itemTitle)
         private val priceText: TextView = itemView.findViewById(R.id.itemPrice)
         private val categoryText: TextView = itemView.findViewById(R.id.itemCategory)
+        private val pickupText: TextView = itemView.findViewById(R.id.pickupLocation)
         private val imageView: ImageView = itemView.findViewById(R.id.itemImage)
         
         fun bind(item: Item) {
             titleText.text = item.title
             priceText.text = formatPrice(item.price)
             categoryText.text = item.category
+            pickupText.text = itemView.context.getString(R.string.label_pickup_short, item.pickupLocation)
             
             if (item.imageUrl != null && item.imageUrl.isNotEmpty()) {
                 Glide.with(itemView.context)

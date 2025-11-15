@@ -12,11 +12,13 @@ data class User(
     val profileImageUrl: String? = null,
     val rating: Float = 0f,
     val userType: UserType = UserType.BUYER,
+    val status: String = "PENDING",
     val authToken: String? = null
 ) : Parcelable
 
 enum class UserType {
     BUYER,
-    SELLER
+    SELLER,
+    ADMIN
 }
 

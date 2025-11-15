@@ -10,6 +10,9 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    plugins {
+        id("org.jetbrains.kotlin.jvm") version "1.9.20"
+    }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -21,4 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "FleaMarketApp"
 include(":app")
+include(":ktor-backend")
+project(":ktor-backend").projectDir = file("ktor-backend")
  

@@ -53,5 +53,45 @@
         android:label="Create Listing"
         tools:layout="@layout/fragment_create_listing" />
 
+    <fragment
+        android:id="@+id/nav_checkout"
+        android:name="com.labs.fleamarketapp.fragments.CheckoutFragment"
+        android:label="Checkout"
+        tools:layout="@layout/fragment_checkout">
+        <argument
+            android:name="itemId"
+            app:argType="string" />
+        <argument
+            android:name="itemTitle"
+            app:argType="string" />
+        <argument
+            android:name="itemPrice"
+            app:argType="string" />
+        <argument
+            android:name="sellerLocation"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_order_confirmation"
+        android:name="com.labs.fleamarketapp.fragments.OrderConfirmationFragment"
+        android:label="Order Confirmation"
+        tools:layout="@layout/fragment_order_confirmation">
+        <argument
+            android:name="sellerLocation"
+            app:argType="string" />
+        <argument
+            android:name="buyerLocation"
+            app:argType="string" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_nav_item_detail_to_nav_checkout"
+        app:destination="@id/nav_checkout" />
+
+    <action
+        android:id="@+id/action_nav_checkout_to_nav_order_confirmation"
+        app:destination="@id/nav_order_confirmation" />
+
 </navigation>
 

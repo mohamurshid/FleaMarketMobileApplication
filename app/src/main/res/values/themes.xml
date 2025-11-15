@@ -3,7 +3,23 @@
     <style name="Theme.FleaMarketApp" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorAccent">@color/primary</item>
-        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorAccent">@color/secondary</item>
+
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:navigationBarColor">@color/primary_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowBackground">@drawable/bg_app_gradient</item>
+
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+
+        <item name="materialButtonStyle">@style/Widget.FleaMarket.Button.Primary</item>
+        <item name="textInputStyle">@style/Widget.FleaMarket.TextInputLayout</item>
+        <item name="cardViewStyle">@style/Widget.FleaMarket.Card</item>
+        <item name="chipStyle">@style/Widget.FleaMarket.Chip</item>
+        <item name="tabStyle">@style/Widget.FleaMarket.TabLayout</item>
     </style>
 </resources>

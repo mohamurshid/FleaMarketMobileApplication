@@ -13,7 +13,8 @@ data class Order(
     val amount: Double,
     val status: OrderStatus,
     val createdAt: Long,
-    val completedAt: Long? = null
+    val completedAt: Long? = null,
+    val selectedPickupLocation: String = "STC"
 ) : Parcelable
 
 enum class OrderStatus {

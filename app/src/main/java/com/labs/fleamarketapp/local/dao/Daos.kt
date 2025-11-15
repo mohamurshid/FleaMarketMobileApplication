@@ -35,6 +35,12 @@ interface CategoryDao {
 interface ItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(item: ItemEntity)
+    
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAll(items: List<ItemEntity>)
+    
+    @Query("DELETE FROM items")
+    suspend fun clearAll()
 
     @Query("SELECT * FROM items WHERE id = :id")
     fun getById(id: String): Flow<ItemEntity?>

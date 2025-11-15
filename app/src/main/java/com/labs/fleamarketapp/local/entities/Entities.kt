@@ -34,11 +34,15 @@ data class ItemEntity(
     val title: String,
     val description: String,
     val price: Double?, // nullable for auction-only items
+    val startingBid: Double? = null,
+    val currentBid: Double? = null,
     val condition: ItemCondition,
     val itemType: ItemType,
     val status: Status,
     val images: List<String>, // type converter required
     val categoryId: Long? = null,
+    val auctionEndTime: Long? = null,
+    val pickupLocation: String = "STC",
     val createdAt: Long // added to support ORDER BY createdAt queries
 )
 
@@ -59,7 +63,8 @@ data class OrderEntity(
     val sellerId: String,
     val totalAmount: Double,
     val status: Status,
-    val createdAt: Long
+    val createdAt: Long,
+    val selectedPickupLocation: String = "STC"
 )
 
 @Entity(tableName = "notifications")

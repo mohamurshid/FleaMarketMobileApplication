@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Blue Color Scheme -->
-    <color name="primary">#2196F3</color>
-    <color name="primary_dark">#1976D2</color>
-    <color name="primary_light">#BBDEFB</color>
+
+    <!-- Core palette -->
+    <color name="primary">#0D47A1</color>
+    <color name="primary_dark">#0A3A82</color>
+    <color name="primary_light">#9CC4FF</color>
+    <color name="secondary">#FFB300</color>
+    <color name="secondary_dark">#E09600</color>
+    <color name="secondary_light">#FFE082</color>
+
+    <!-- Surfaces & backgrounds -->
+    <color name="background">#F5F7FB</color>
     <color name="surface">#FFFFFF</color>
+    <color name="surface_alt">#EDF2FB</color>
+
+    <!-- Text / icon colors -->
     <color name="on_primary">#FFFFFF</color>
-    
-    <!-- Additional colors -->
+    <color name="on_secondary">#111827</color>
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#4B5563</color>
+
+    <!-- Accents -->
+    <color name="success">#2E7D32</color>
+    <color name="warning">#F9A825</color>
+    <color name="error">#D32F2F</color>
+    <color name="divider">#E0E6ED</color>
+
+    <!-- Gradients -->
+    <color name="gradient_start">#0D47A1</color>
+    <color name="gradient_mid">#1976D2</color>
+    <color name="gradient_end">#42A5F5</color>
+
+    <!-- Legacy aliases (backwards compatibility) -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
-    <color name="divider">#BDBDBD</color>
 </resources>
